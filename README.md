@@ -1,3 +1,5 @@
 # thousandtemples server
 
 [View on Eraser![](https://app.eraser.io/workspace/OMwCnXFSdKmBxQk40k2q/preview?elements=AawSDNRaoBAeg5vehC66gg&type=embed)](https://app.eraser.io/workspace/OMwCnXFSdKmBxQk40k2q?elements=AawSDNRaoBAeg5vehC66gg)
+
+<a href="https://app.eraser.io/workspace/OMwCnXFSdKmBxQk40k2q?elements=AawSDNRaoBAeg5vehC66gg">View on Eraser<br /><img src="https://app.eraser.io/workspace/OMwCnXFSdKmBxQk40k2q/preview?elements=AawSDNRaoBAeg5vehC66gg&type=embed" /></a>
