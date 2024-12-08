@@ -14,9 +14,28 @@ datasource db {
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email String
-  phoneNumber String
-  gender String
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  username       String
+  password       String
+  name           String?
+  email          String?
+  profilePicture String?
+  phoneNumber    String?
+  gender         Gender?
+  role           Role    @default(BASIC)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Role {
+  ADMIN
+  BASIC
 }
