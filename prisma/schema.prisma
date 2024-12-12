@@ -1,0 +1,273 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                         String                       @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt                  DateTime                     @default(now())
+  updatedAt                  DateTime                     @updatedAt
+  username                   String                       @unique
+  password                   String
+  name                       String?
+  email                      String?
+  profilePicture             String?
+  phoneNumber                String?
+  gender                     Gender?
+  token                      String?
+  role                       Role                         @default(BASIC)
+  users_comment_stories      users_comment_stories[]
+  users_like_stories         users_like_stories[]
+  users_save_stories         users_save_stories[]
+  users_view_stories         users_view_stories[]
+  users_comment_destinations users_comment_destinations[]
+  users_like_destinations    users_like_destinations[]
+  users_save_destinations    users_save_destinations[]
+  users_view_destinations    users_view_destinations[]
+  users_comment_cultures     users_comment_cultures[]
+  users_like_cultures        users_like_cultures[]
+  users_save_cultures        users_save_cultures[]
+  users_view_cultures        users_view_cultures[]
+
+  @@map("users")
+}
+
+model Story {
+  id                    String                  @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  name                  String
+  slug                  String                  @unique
+  description           String
+  cover                 String
+  body                  String
+  readingTime           Int
+  username              String
+  users_comment_stories users_comment_stories[]
+  users_like_stories    users_like_stories[]
+  users_save_stories    users_save_stories[]
+  users_view_stories    users_view_stories[]
+
+  @@map("stories")
+}
+
+model Destination {
+  id                         String                       @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt                  DateTime                     @default(now())
+  updatedAt                  DateTime                     @updatedAt
+  name                       String
+  slug                       String                       @unique
+  description                String
+  cover                      String
+  address                    String
+  price                      Int?
+  map                        String
+  users_comment_destinations users_comment_destinations[]
+  users_like_destinations    users_like_destinations[]
+  users_save_destinations    users_save_destinations[]
+  users_view_destinations    users_view_destinations[]
+  District                   District?                    @relation(fields: [districtSlug], references: [slug], onDelete: Cascade)
+  districtSlug               String?                      @db.ObjectId
+  Category                   Category?                    @relation(fields: [categorySlug], references: [slug], onDelete: Cascade)
+  categorySlug               String?                      @db.ObjectId
+
+  @@map("destinations")
+}
+
+model Culture {
+  id                     String                   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  name                   String
+  slug                   String                   @unique
+  description            String
+  body                   String
+  cover                  String
+  address                String?
+  users_comment_cultures users_comment_cultures[]
+  users_like_cultures    users_like_cultures[]
+  users_save_cultures    users_save_cultures[]
+  users_view_cultures    users_view_cultures[]
+  districtSlug           String?                  @db.ObjectId
+  District               District?                @relation(fields: [districtSlug], references: [slug], onDelete: Cascade)
+
+  @@map("cultures")
+}
+
+model Category {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  slug        String        @unique @db.ObjectId
+  description String?
+  destination Destination[]
+
+  @@map("categories")
+}
+
+model District {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  name         String
+  slug         String        @unique @db.ObjectId
+  logo         String?
+  cover        String?
+  description  String?
+  body         String?
+  destinations Destination[]
+  cultures     Culture[]
+
+  @@map("districts")
+}
+
+/////////PIVOT////////////////////////////////////////////////////////////
+
+model users_comment_stories {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  username  String
+  storySlug String
+  body      String
+  user      User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  story     Story    @relation(fields: [storySlug], references: [slug], onDelete: Cascade)
+}
+
+model users_like_stories {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  username  String
+  storySlug String
+  user      User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  story     Story    @relation(fields: [storySlug], references: [slug], onDelete: Cascade)
+}
+
+model users_save_stories {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  username  String
+  storySlug String
+  user      User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  story     Story    @relation(fields: [storySlug], references: [slug], onDelete: Cascade)
+}
+
+model users_view_stories {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  username  String
+  storySlug String
+  user      User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  story     Story    @relation(fields: [storySlug], references: [slug], onDelete: Cascade)
+}
+
+////
+
+model users_comment_destinations {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  username        String
+  destinationSlug String
+  body            String
+  user            User        @relation(fields: [username], references: [username], onDelete: Cascade)
+  destination     Destination @relation(fields: [destinationSlug], references: [slug], onDelete: Cascade)
+}
+
+model users_like_destinations {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  username        String
+  destinationSlug String
+  user            User        @relation(fields: [username], references: [username], onDelete: Cascade)
+  destination     Destination @relation(fields: [destinationSlug], references: [slug], onDelete: Cascade)
+}
+
+model users_save_destinations {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  username        String
+  destinationSlug String
+  user            User        @relation(fields: [username], references: [username], onDelete: Cascade)
+  destination     Destination @relation(fields: [destinationSlug], references: [slug], onDelete: Cascade)
+}
+
+model users_view_destinations {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  username        String
+  destinationSlug String
+  user            User        @relation(fields: [username], references: [username], onDelete: Cascade)
+  destination     Destination @relation(fields: [destinationSlug], references: [slug], onDelete: Cascade)
+}
+
+////
+
+model users_comment_cultures {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  username    String
+  cultureSlug String
+  body        String
+  user        User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  culture     Culture  @relation(fields: [cultureSlug], references: [slug], onDelete: Cascade)
+}
+
+model users_like_cultures {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  username    String
+  cultureSlug String
+  user        User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  culture     Culture  @relation(fields: [cultureSlug], references: [slug], onDelete: Cascade)
+}
+
+model users_save_cultures {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  username    String
+  cultureSlug String
+  user        User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  culture     Culture  @relation(fields: [cultureSlug], references: [slug], onDelete: Cascade)
+}
+
+model users_view_cultures {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  username    String
+  cultureSlug String
+  user        User     @relation(fields: [username], references: [username], onDelete: Cascade)
+  culture     Culture  @relation(fields: [cultureSlug], references: [slug], onDelete: Cascade)
+}
+
+////////RANDOM////////////////////////////////////////////////////////////
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Role {
+  ADMIN
+  BASIC
+}
