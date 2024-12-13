@@ -24,7 +24,7 @@ class UserService {
     if (usernameUsed) throw new ResponseError(400, "user already exists");
     request.password = await bcrypt.hash(request.password, 10);
     return db.user.create({
-      data: { ...request, role: 'ADMIN' },
+      data: { ...request, role: "ADMIN" },
       select: { username: true },
     });
   }

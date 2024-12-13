@@ -91,7 +91,37 @@ class DestinationController {
     try {
       const slug = req.params.slug;
       const username = req.username;
-      const response = await DestinationService.unsave(slug, username);
+      await DestinationService.unsave(slug, username);
+      res.status(200).json({ data: "OK" });
+    } catch (e) {
+      next(e);
+    }
+  }
+  static async like(req, res, next) {
+    try {
+      const slug = req.params.slug;
+      const username = req.username;
+      const response = await DestinationService.like(slug, username);
+      res.status(200).json({ data: response });
+    } catch (e) {
+      next(e);
+    }
+  }
+  static async dislike(req, res, next) {
+    try {
+      const slug = req.params.slug;
+      const username = req.username;
+      await DestinationService.dislike(slug, username);
+      res.status(200).json({ data: "OK" });
+    } catch (e) {
+      next(e);
+    }
+  }
+  static async view(req, res, next) {
+    try {
+      const slug = req.params.slug;
+      const username = req.username;
+      const response = await DestinationService.view(slug, username);
       res.status(200).json({ data: response });
     } catch (e) {
       next(e);

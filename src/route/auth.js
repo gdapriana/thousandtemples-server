@@ -14,5 +14,8 @@ authRouter.post("/api/destinations/:slug/comment", authMiddleware, DestinationCo
 authRouter.delete("/api/destinations/:slug/comment/:id", authMiddleware, DestinationController.uncomment);
 authRouter.post("/api/destinations/:slug/save", authMiddleware, DestinationController.save);
 authRouter.delete("/api/destinations/:slug/save", authMiddleware, DestinationController.unsave);
+authRouter.post("/api/destinations/:slug/like", authMiddleware, DestinationController.like);
+authRouter.delete("/api/destinations/:slug/like", authMiddleware, DestinationController.dislike);
+authRouter.post("/api/destinations/:slug/view", authMiddleware, DestinationController.view);
 
 export default authRouter;

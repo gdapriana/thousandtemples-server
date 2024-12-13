@@ -139,17 +139,74 @@ class DestinationService {
       },
     });
     if (!saved) throw new ResponseError(400, "destination not saved");
-    return db.users_save_destinations.delete({
+    await db.users_save_destinations.deleteMany({
+      where: {
+        username: username,
+        destinationSlug: slug,
+      },
+    });
+  }
+  static async like(slug, username) {
+    const destination = await db.destination.findUnique({
+      where: { slug },
+    });
+    if (!destination) throw new ResponseError(404, "destination not found");
+    const liked = await db.users_like_destinations.findFirst({
       where: {
         destinationSlug: slug,
+        username,
+      },
+    });
+    if (liked) throw new ResponseError(400, "destination already liked");
+    return db.users_like_destinations.create({
+      data: {
+        destinationSlug: slug,
+        username,
+      },
+      select: {
+        destination: true,
+      },
+    });
+  }
+  static async dislike(slug, username) {
+    const destination = await db.destination.findUnique({
+      where: { slug },
+    });
+    if (!destination) throw new ResponseError(404, "destination not found");
+    const liked = await db.users_like_destinations.findFirst({
+      where: {
+        destinationSlug: slug,
+        username,
+      },
+    });
+    if (!liked) throw new ResponseError(400, "destination not liked");
+    await db.users_like_destinations.deleteMany({
+      where: {
+        destinationSlug: slug,
+        username,
+      },
+    });
+  }
+  static async view(slug, username) {
+    const destination = await db.destination.findUnique({
+      where: { slug },
+    });
+    if (!destination) throw new ResponseError(404, "destination not found");
+    const viewed = await db.users_like_destinations.findFirst({
+      where: {
         username: username,
+        destinationSlug: slug,
+      },
+    });
+    if (viewed) throw new ResponseError(400, "destination already viewed");
+    return db.users_view_destinations.create({
+      data: {
+        username,
+        destinationSlug: slug,
       },
       select: { destination: true },
     });
   }
-  // like
-  // dislike
-  // view
 }
 
 export default DestinationService;
