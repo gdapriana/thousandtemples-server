@@ -192,7 +192,7 @@ class DestinationService {
       where: { slug },
     });
     if (!destination) throw new ResponseError(404, "destination not found");
-    const viewed = await db.users_like_destinations.findFirst({
+    const viewed = await db.users_view_destinations.findFirst({
       where: {
         username: username,
         destinationSlug: slug,
