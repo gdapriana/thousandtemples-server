@@ -53,7 +53,7 @@ model Story {
   cover                 String
   body                  String
   readingTime           Int
-  username              String?
+  username              String
   users_comment_stories users_comment_stories[]
   users_like_stories    users_like_stories[]
   users_save_stories    users_save_stories[]
