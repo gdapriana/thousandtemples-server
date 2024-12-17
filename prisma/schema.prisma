@@ -26,6 +26,7 @@ model User {
   gender                     Gender?
   token                      String?
   role                       Role                         @default(BASIC)
+  stories                    Story[]
   users_comment_stories      users_comment_stories[]
   users_like_stories         users_like_stories[]
   users_save_stories         users_save_stories[]
@@ -52,11 +53,12 @@ model Story {
   cover                 String
   body                  String
   readingTime           Int
-  username              String
+  username              String?
   users_comment_stories users_comment_stories[]
   users_like_stories    users_like_stories[]
   users_save_stories    users_save_stories[]
   users_view_stories    users_view_stories[]
+  User                  User?                   @relation(fields: [username], references: [username])
 
   @@map("stories")
 }
