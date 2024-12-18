@@ -9,6 +9,7 @@ const publicRouter = express.Router();
 publicRouter.get("/", welcome);
 publicRouter.post("/api/register", UserController.register);
 publicRouter.post("/api/admin/register", UserController.registerAdmin);
+publicRouter.get("/api/users/:username", UserController.get);
 publicRouter.post("/api/login", UserController.login);
 
 publicRouter.get("/api/destinations", DestinationController.gets);

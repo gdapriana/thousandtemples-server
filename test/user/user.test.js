@@ -1,7 +1,6 @@
 import supertest from 'supertest'
-import db from "../../src/application/database.js";
 import web from "../../src/application/web.js";
-import { createBasicUser, deleteAllUser, loginBasicUser, userTestProperties } from "./utils.js";
+import { createBasicUser, deleteAllUser, loginBasicUser, userTestProperties } from "../utils/utils.js";
 
 describe("POST /api/register", () => {
   afterEach(async () => {
@@ -30,6 +29,26 @@ describe("POST /api/register", () => {
     expect(result.body.data).toBeDefined();
   });
 });
+describe("GET /api/users/:username", () => {
+  beforeEach(async () => {
+    await createBasicUser()
+  })
+  it("should cannot get, wrong username", async () => {
+    const result = await supertest(web)
+      .get('/api/users/random')
+    expect(result.status).toBe(404);
+    expect(result.body.errors).toBeDefined();
+  });
+  it("should can get", async () => {
+    const result = await supertest(web)
+      .get(`/api/users/${userTestProperties.BASIC_USERNAME}`)
+    expect(result.status).toBe(200);
+    expect(result.body.data).toBeDefined();
+  });
+  afterEach(async () => {
+    await deleteAllUser()
+  })
+})
 describe("POST /api/login", () => {
   beforeEach(async () => {
     await createBasicUser()

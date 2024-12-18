@@ -28,6 +28,15 @@ class UserController {
       next(e);
     }
   }
+  static async get(req, res, next) {
+    try {
+      const username = req.params.username;
+      const response = await UserService.get(username);
+      res.status(200).json({ data: response });
+    } catch (e) {
+      next(e)
+    }
+  }
   static async update(req, res, next) {
     try {
       const request = req.body;

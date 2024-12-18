@@ -13,7 +13,6 @@ class DestinationController {
   static async get(req, res, next) {
     try {
       const request = req.params.slug;
-      console.log(request);
       const response = await DestinationService.get(request);
       res.status(200).json({ data: response });
     } catch (e) {

@@ -46,6 +46,22 @@ class UserService {
       },
     });
   }
+
+  static async get(username) {
+    const user = await db.user.findUnique({
+      where: { username },
+      include: {
+        _count: true,
+        stories: true,
+        users_save_cultures: true,
+        users_save_destinations: true,
+        users_save_stories: true,
+      }
+    });
+    if (!user) throw new ResponseError(404, "user not found");
+    return user;
+  }
+
   static async update(req, username) {
     const request = validation(UserValidation.UPDATE, req);
     const user = await db.user.findUnique({where: {username}})
