@@ -28,7 +28,6 @@ class UserController {
       next(e);
     }
   }
-
   static async logout(req, res, next) {
     try {
       const response = await UserService.logout(req.username);
