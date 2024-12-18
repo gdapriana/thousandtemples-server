@@ -5,6 +5,7 @@ import ResponseError from "../error/response.js";
 import db from "../application/database.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import CultureValidation from "../validation/culture.js";
 dotenv.config();
 
 class UserService {
@@ -46,7 +47,6 @@ class UserService {
       },
     });
   }
-
   static async get(username) {
     const user = await db.user.findUnique({
       where: { username },
@@ -61,7 +61,21 @@ class UserService {
     if (!user) throw new ResponseError(404, "user not found");
     return user;
   }
-
+  static async gets(req) {
+    const queries = validation(UserValidation.GETS, req);
+    return db.user.findMany({
+      where: {
+        AND: [
+          { name: { contains: queries.name, mode: "insensitive" } },
+          { username: { contains: queries.username, mode: "insensitive" } },
+        ],
+      },
+      include : {
+        _count: true
+      },
+      take: queries.count,
+    })
+  }
   static async update(req, username) {
     const request = validation(UserValidation.UPDATE, req);
     const user = await db.user.findUnique({where: {username}})
@@ -82,6 +96,11 @@ class UserService {
       data: { token: null },
       select: { username: true },
     });
+  }
+  static async delete(username) {
+    const user = await db.user.findUnique({where: { username }});
+    if (!user) throw new ResponseError(404, "user not found");
+    await db.user.delete({ where: { username } });
   }
 }
 

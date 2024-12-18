@@ -8,7 +8,9 @@ import CultureController from "../controller/culture.js";
 
 const authRouter = express.Router();
 authRouter.patch("/api/update", authMiddleware, UserController.update);
+authRouter.get("/api/users", authMiddleware, adminMiddleware, UserController.gets);
 authRouter.delete("/api/logout", authMiddleware, UserController.logout);
+authRouter.delete("/api/users/:username", authMiddleware, adminMiddleware, UserController.delete);
 
 authRouter.post("/api/destinations", authMiddleware, adminMiddleware, DestinationController.create);
 authRouter.patch("/api/destinations/:slug", authMiddleware, adminMiddleware, DestinationController.update);

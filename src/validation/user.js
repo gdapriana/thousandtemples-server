@@ -18,6 +18,11 @@ class UserValidation {
     phoneNumber: z.string().min(3).optional(),
     gender: z.string().min(3).optional(),
   })
+  static GETS = z.object({
+    count: z.number().min(1).optional(),
+    username: z.string().optional(),
+    name: z.string().optional(),
+  })
 }
 
 export default UserValidation;
