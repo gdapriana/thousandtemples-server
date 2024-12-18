@@ -1,6 +1,13 @@
 import supertest from 'supertest'
 import web from "../../src/application/web.js";
-import { createBasicUser, deleteAllUser, loginBasicUser, userTestProperties } from "../utils/utils.js";
+import {
+  createAdminUser,
+  createBasicUser,
+  deleteAllUser,
+  loginAdminUser,
+  loginBasicUser,
+  userTestProperties
+} from "../utils/utils.js";
 
 describe("POST /api/register", () => {
   afterEach(async () => {
@@ -154,3 +161,65 @@ describe("DELETE /api/logout", () => {
     await deleteAllUser()
   })
 })
+describe("GET /api/users", () => {
+  beforeEach(async () => {
+    await createBasicUser()
+    await createAdminUser()
+  })
+  it("should cannot gets, no auth", async () => {
+    const result = await supertest(web)
+      .get('/api/users')
+    expect(result.status).toBe(401)
+    expect(result.body.errors).toBeDefined();
+  });
+  it("should cannot gets, no admin", async () => {
+    const token = await loginBasicUser()
+    const result = await supertest(web)
+      .get('/api/users')
+      .set('Authorization', token)
+    expect(result.status).toBe(401)
+    expect(result.body.errors).toBeDefined();
+  });
+  it("should can gets", async () => {
+    const token = await loginAdminUser()
+    const result = await supertest(web)
+      .get('/api/users')
+      .set('Authorization', token)
+    expect(result.status).toBe(200)
+    expect(result.body.data).toBeDefined();
+  });
+  afterEach(async () => {
+    await deleteAllUser()
+  })
+});
+describe("DELETE /api/users/:username", () => {
+  beforeEach(async () => {
+    await createBasicUser()
+    await createAdminUser()
+  })
+  it("should cannot delete, no auth", async () => {
+    const result = await supertest(web)
+      .delete(`/api/users/${userTestProperties.BASIC_USERNAME}`)
+    expect(result.status).toBe(401)
+    expect(result.body.errors).toBeDefined();
+  });
+  it("should cannot delete, no admin", async () => {
+    const token = await loginBasicUser()
+    const result = await supertest(web)
+      .delete(`/api/users/${userTestProperties.BASIC_USERNAME}`)
+      .set('Authorization', token)
+    expect(result.status).toBe(401)
+    expect(result.body.errors).toBeDefined();
+  });
+  it("should can delete", async () => {
+    const token = await loginAdminUser()
+    const result = await supertest(web)
+      .delete(`/api/users/${userTestProperties.BASIC_USERNAME}`)
+      .set('Authorization', token)
+    expect(result.status).toBe(200)
+    expect(result.body.data).toBeDefined();
+  });
+  afterEach(async () => {
+    await deleteAllUser()
+  })
+});

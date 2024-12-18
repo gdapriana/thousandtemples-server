@@ -28,7 +28,7 @@ export const createAdminUser = async () => {
   await db.user.create({
     data: {
       username: userTestProperties.ADMIN_USERNAME,
-      password: bcrypt.hash(userTestProperties.ADMIN_PASSWORD, 10),
+      password: await bcrypt.hash(userTestProperties.ADMIN_PASSWORD, 10),
       name: userTestProperties.ADMIN_NAME,
       role: "ADMIN"
     }
@@ -50,7 +50,7 @@ export const loginAdminUser = async () => {
       username: userTestProperties.ADMIN_USERNAME,
       password: userTestProperties.ADMIN_PASSWORD,
     })
-  return response.data.token
+  return response.body.data.token
 }
 
 export const deleteAllUser = async () => {
