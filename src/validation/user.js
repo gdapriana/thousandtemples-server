@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-class User {
+class UserValidation {
   static REGISTER = z.object({
     username: z.string().min(3),
     password: z.string().min(3),
@@ -10,6 +10,14 @@ class User {
     username: z.string().min(3),
     password: z.string().min(3),
   });
+  static UPDATE = z.object({
+    name: z.string().min(3).optional(),
+    password : z.string().min(3).optional(),
+    email: z.string().email().optional(),
+    profilePicture: z.string().url().min(4).optional(),
+    phoneNumber: z.string().min(3).optional(),
+    gender: z.string().min(3).optional(),
+  })
 }
 
-export default User;
+export default UserValidation;

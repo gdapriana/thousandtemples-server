@@ -28,6 +28,16 @@ class UserController {
       next(e);
     }
   }
+  static async update(req, res, next) {
+    try {
+      const request = req.body;
+      const username = req.username;
+      const response = await UserService.update(request, username);
+      return res.status(200).json({ data: response });
+    } catch (e) {
+      next(e)
+    }
+  }
   static async logout(req, res, next) {
     try {
       const response = await UserService.logout(req.username);

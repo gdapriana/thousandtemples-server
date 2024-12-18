@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import validation from "../validation/validation.js";
-import User from "../validation/user.js";
+import UserValidation from "../validation/user.js";
 import ResponseError from "../error/response.js";
 import db from "../application/database.js";
 import jwt from "jsonwebtoken";
@@ -9,7 +9,7 @@ dotenv.config();
 
 class UserService {
   static async register(req) {
-    const request = validation(User.REGISTER, req);
+    const request = validation(UserValidation.REGISTER, req);
     const usernameUsed = await db.user.findUnique({ where: { username: request.username } });
     if (usernameUsed) throw new ResponseError(400, "user already exists");
     request.password = await bcrypt.hash(request.password, 10);
@@ -19,7 +19,7 @@ class UserService {
     });
   }
   static async registerAdmin(req) {
-    const request = validation(User.REGISTER, req);
+    const request = validation(UserValidation.REGISTER, req);
     const usernameUsed = await db.user.findUnique({ where: { username: request.username } });
     if (usernameUsed) throw new ResponseError(400, "user already exists");
     request.password = await bcrypt.hash(request.password, 10);
@@ -29,7 +29,7 @@ class UserService {
     });
   }
   static async login(req) {
-    const request = validation(User.LOGIN, req);
+    const request = validation(UserValidation.LOGIN, req);
     const user = await db.user.findUnique({ where: { username: request.username } });
     if (!user) throw new ResponseError(401, "username or pasword wrong");
     if (!(await bcrypt.compare(request.password, user.password)))
@@ -45,6 +45,18 @@ class UserService {
         username: true,
       },
     });
+  }
+  static async update(req, username) {
+    const request = validation(UserValidation.UPDATE, req);
+    const user = await db.user.findUnique({where: {username}})
+    if (!user) throw new ResponseError(401, "user not found");
+    return db.user.update({
+      where: { username },
+      data:  request,
+      select: {
+        username: true
+      }
+    })
   }
   static async logout(username) {
     const user = await db.user.findUnique({ where: { username } });

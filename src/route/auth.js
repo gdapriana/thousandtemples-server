@@ -7,6 +7,7 @@ import StoryController from "../controller/story.js";
 import CultureController from "../controller/culture.js";
 
 const authRouter = express.Router();
+authRouter.patch("/api/update", authMiddleware, UserController.update);
 authRouter.delete("/api/logout", authMiddleware, UserController.logout);
 
 authRouter.post("/api/destinations", authMiddleware, adminMiddleware, DestinationController.create);

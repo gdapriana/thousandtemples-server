@@ -4,7 +4,6 @@ import db from "../application/database.js";
 dotenv.config();
 const authMiddleware = async (req, res, next) => {
   const token = req.headers.authorization;
-  console.log({ token });
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) return res.status(401).json({ errors: "Unauthorized" });
