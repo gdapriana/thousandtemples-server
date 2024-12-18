@@ -83,7 +83,6 @@ describe("PATCH /api/update", () => {
   beforeEach(async () => {
     await createBasicUser()
   })
-
   it("should cannot update, no auth", async () => {
     const result = await supertest(web)
       .patch('/api/update')
@@ -94,7 +93,6 @@ describe("PATCH /api/update", () => {
     expect(result.status).toBe(401);
     expect(result.body.errors).toBeDefined();
   });
-
   it("should cannot update, invalid auth", async () => {
     const result = await supertest(web)
       .patch('/api/update')
@@ -130,8 +128,29 @@ describe("PATCH /api/update", () => {
     expect(result.status).toBe(200);
     expect(result.body.data.username).toBeDefined();
   });
-
   afterEach(async () => {
     await deleteAllUser()
   })
 });
+describe("DELETE /api/logout", () => {
+  beforeEach(async () => {
+    await createBasicUser()
+  })
+  it("should cannot logout, no auth", async () => {
+    const result = await supertest(web)
+      .delete('/api/logout')
+    expect(result.status).toBe(401);
+    expect(result.body.errors).toBeDefined();
+  });
+  it("should can logout", async () => {
+    const token = await loginBasicUser()
+    const result = await supertest(web)
+      .delete('/api/logout')
+      .set('Authorization', token)
+    expect(result.status).toBe(200);
+    expect(result.body.data).toBeDefined();
+  });
+  afterEach(async () => {
+    await deleteAllUser()
+  })
+})
